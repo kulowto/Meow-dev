@@ -39,6 +39,7 @@
 1. `../REGISTRY.md`：取得各系統入口
 2. 各系統 `INDEX.md`：取得接受準則
 3. `classification-logic.md`：取得分類原則與歷史案例樣本
+4. `../Meow-Wiki/wiki/concepts/ref-classification-logic-pattern.md`：理解此文件設計思路（初次執行或不確定格式時讀）
 
 **半自動模式流程**：
 1. 分析 `_done/` 中的文件
