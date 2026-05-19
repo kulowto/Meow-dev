@@ -1,0 +1,20 @@
+# 敏感資訊
+.env
+.env.local
+.env.*.local
+
+# Claude Code 本機設定
+.claude/settings.local.json
+
+# 系統
+.DS_Store
+*.stackdump
+.obsidian/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
