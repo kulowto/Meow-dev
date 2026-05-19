@@ -6,8 +6,7 @@
   本框架採 MIT License。衍生系統請保留此區塊作為來源標記。
 -->
 
-<!-- TODO Phase A：Meow-Framework 建立後，取消下行註解 -->
-<!-- @../Meow-Framework/CLAUDE.md -->
+@../Meow-Framework/CLAUDE.md
 
 啟動時讀取：`@../REGISTRY.md`
 
