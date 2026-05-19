@@ -22,7 +22,7 @@
 ## 各目錄說明
 
 ### 架構Wiki與AI的協作環境/
-MT 專屬的 AI 協作文件：角色定義、架構設計思路、開發紀錄、工具開發流程規範。
+MD（Meow-Dev）暫存的 AI 協作文件：角色定義、架構設計思路、開發紀錄、工具開發流程規範。
 通用治理文件已遷移至 `Meow-Framework/governance/`，透過 `CLAUDE.md @include` 自動繼承。
 → 詳見 `架構Wiki與AI的協作環境/MENU.md`
 
