@@ -48,17 +48,28 @@ AI 執行：
 
 ### Phase 2｜MEMO.AI 文字轉錄
 
-**現行流程（使用者操作）**：
-1. 開啟 MEMO.AI（見「MEMO.AI 平台資訊」）
-2. 貼入 YouTube URL（直接支援，不需下載影片）
-3. 點擊「確認轉錄」→ 選擇模型
-   - 推薦模型：**高品質 - Medium**
-   - 運算方式：**GPU**（有顯卡時速度較快）
-4. 等待右側轉錄結果出現
-5. 點擊「匯出文字檔」→ 貼入對話 或 儲存 .txt
+**現行流程（AI 透過 CDP 自動操作）**：
+1. 以 CDP 模式啟動 MEMO.AI：
+   `Start-Process "C:\Users\{username}\AppData\Local\Programs\Memo\Memo.exe" -ArgumentList "--remote-debugging-port=9222"`
+2. CDP 連線：`http://localhost:9222/json` 取得 WebSocket URL
+3. 填入 YouTube URL → 點擊第一個「確認轉錄」按鈕
+4. **等待對話框出現後，依序設定以下三項（必填，不可略過）**：
+   - 模型：**高品質 - Medium**（下拉選單，選錯會影響辨識品質）
+   - 運算方式：**GPU 加速**（勾選，有顯卡時速度較快）
+   - **自動斷句**：勾選（影響逐字稿分段品質）
+5. 點擊對話框內的「確認轉錄」→ 等待轉錄完成
+6. 切換至「語音轉文字」tab → 提取逐字稿文字 → 存 `.txt`
 
-**AI 調用計畫（待實作，見「MEMO.AI 平台資訊」）**：
-目前 AI 無法自動呼叫 MEMO.AI，為手動節點。
+**⚠️ CDP 腳本對話框設定注意事項**：
+對話框內的模型選單和勾選項必須在 `DIALOG_CONFIRMED` 前完成設定。
+相關腳本：`C:/Users/AkatsukiNeko/AppData/Local/Temp/memo_batch.py`
+
+**重要限制**：
+- MEMO.AI **僅能轉錄語音**，無法擷取影片中的純文字畫面
+- 若影片無口述語音（全靠字幕文字呈現步驟），需改用其他工具或使用者手動補充
+- 需改用工具時，在工具規格草稿的來源欄位標注「無語音，需手動補充」
+
+輸出：原始逐字稿（包含語音辨識錯誤，此為正常現象，Phase 3 修正）
 
 **重要限制**：
 - MEMO.AI **僅能轉錄語音**，無法擷取影片中的純文字畫面
