@@ -62,13 +62,15 @@
 
 | 文件名 | 使用情境 | 類型 |
 |--------|---------|------|
-| 影片轉工具開發流程規範 | 影片→逐字稿→步驟→實作的完整流程 | AI讀 |
-| PS工具架構設計規範（通用版） | 任何 PS 工具的分類/介面/命名/測試規範 | AI讀 |
-| 工具規格草稿_Video1_路面积水效果 | Video 1 Phase 3 範例（已分析，待 Phase 4） | AI讀 |
-| 工具規格草稿_Video3_素描效果 | Video 3 Phase 3 範例（半自動化警示） | AI讀 |
+| 開發理念_流程設計與資訊濾網模型 | 不確定設計邏輯時先讀，了解濾網模型與上下游關係 | AI讀 |
+| 影片轉工具開發流程規範 | 影片→逐字稿→步驟→實作的完整流程（粗濾網） | AI讀 |
+| 語音辨識錯誤紀錄_Debug | Phase 3 粗濾網後，二次優化語音辨識誤差（細濾網） | AI讀 |
+| PS工具架構設計規範（通用版） | 任何 PS 工具的分類/介面/命名/測試規範（下游） | AI讀 |
+| 工具規格草稿_Video1_路面积水效果 | Video 1 Phase 3 完成（待 Phase 4） | AI讀 |
+| 工具規格草稿_Video3_素描效果 | Video 3 Phase 3 完成（待 Phase 4） | AI讀 |
 | 工具規格草稿_Video4_絲網印刷效果 | Video 4 Phase 4 完成（待 Phase 5 實作） | AI讀 |
-| 工具規格草稿_Video5_矩形漸變構圖 | Video 5 Phase 3 完成（PS 確認，步驟待驗證） | AI讀 |
-| 工具規格草稿_Video6_AI凌亂線條字 | Video 6 AI 軟體，暫時跳過實作，步驟已保留 | AI讀 |
-| 工具規格草稿_Video7_雙氛圍感光效 | Video 7 Phase 3 完成（待確認 Ctrl+2 操作） | AI讀 |
-| 工具規格草稿_Video8_透明玻璃字 | Video 8 Phase 3 完成（數值全待累積） | AI讀 |
+| 工具規格草稿_Video5_矩形漸變構圖 | Video 5 Phase 4 完成（待 Phase 5 實作） | AI讀 |
+| 工具規格草稿_Video6_AI凌亂線條字 | Video 6 Illustrator，暫跳過實作，步驟已保留 | AI讀 |
+| 工具規格草稿_Video7_雙氛圍感光效 | Video 7 Phase 4 完成（待 Phase 5 實作） | AI讀 |
+| 工具規格草稿_Video8_透明玻璃字 | Video 8 Phase 4 完成（待 Phase 5 實作） | AI讀 |
 | PS工具規格書範本 | 新影片 Phase 3 分析時複製此範本 | Prompt |
