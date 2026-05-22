@@ -58,14 +58,18 @@
 > 流程：心智圖（Xmind）→ AI 爬現有檔案 → 填入對應區塊 → 整理文案邏輯 → 輸出影片腳本草稿
 
 ### 目前狀態
-- 工具一（`xmind_reader.py`）：完成，讀寫 / 搜尋 / 修改 / 樹狀顯示全部就緒
-- 工具二（`xmind_to_canvas.py`）：主體完成，投資方法測試中，有已知 BUG 待修
-- 測試進度：尤里教 ✓、金字塔原理 ✓、筆記類型 ✓、**投資方法（進行中）**、ＢＤ２（待）
+- 工具一（`xmind_reader.py`）：✅ 完成
+- 工具二（`xmind_to_canvas.py`）：✅ 完成，有已知 BUG 待修（見障礙區）
+- 工具三（`xmind_organizer.py`）：✅ 完成，AI 語意整理，可抽換 LLM provider
+- 工具四（`xmind_writer.py`）：✅ 完成，標準化 JSON → .xmind，支援 boundaries
+- 工具五（`xmind_to_md.py`）：✅ 完成，Xmind / JSON → MD，含 boundaries 彙整表
+- CLI（`xmind_organize_run.py`）：✅ 完成
+- ＢＤ２ 整理：產出 `BD2_organized.md`（桌面），暫存 `bd2_organized.json`（桌面）
 
 ### 下一步優先順序（B 區塊）
-1. 跑 `ＢＤ２.xmind`（桌面）
-2. 全部 OK 後 → 設計「AI 填入心智圖」workflow，以 BD2 資料為測試素材
-3. 修 boundary 第一子節點 BUG（詳見障礙區）
+1. 使用者閱讀 `BD2_organized.md`，討論如何進一步調整格式 / 補充比對資訊
+2. 修 boundary 第一子節點 BUG（詳見障礙區）
+3. 設計「AI 填入心智圖」workflow
 
 ### B 區塊：排版參數現況（xmind_to_canvas.py）
 
