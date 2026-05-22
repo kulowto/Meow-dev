@@ -27,12 +27,14 @@ MD（Meow-Dev）暫存的 AI 協作文件：角色定義、架構設計思路、
 → 詳見 `架構Wiki與AI的協作環境/MENU.md`
 
 ### Meow-Toolbox/
-Photoshop 工具的設計規格文件，與 `ps_tools/`（程式碼）搭配使用。
+工具設計規格文件區，依工具類型分子目錄。
 
 | 路徑 | 內容 |
 |------|------|
 | `Photoshop/` | PSD Master Blueprint、各工具 spec（contour_line、outline_border、source_separation） |
 | `Photoshop/tools/` | 各工具的 `(Tool)` 規格文件 |
+| `Xmind/` | 心智圖輔助工具：xmind_reader（讀寫）+ xmind_to_canvas（轉換）；詳見 `(AI_Read) Xmind工具架構說明.md` |
+| `Xmind/schema/` | .xmind 與 .canvas 格式參考文件 |
 | `_schema/` | 新工具文件骨架模板 |
 
 ### design-systems/
