@@ -1,5 +1,5 @@
 # Meow-Dev 工作上下文
-更新時間：2026-05-22 14:00
+更新時間：2026-05-22 16:30
 
 ---
 
@@ -59,25 +59,27 @@
 
 ### 目前狀態
 - 工具一（`xmind_reader.py`）：完成，讀寫 / 搜尋 / 修改 / 樹狀顯示全部就緒
-- 工具二（`xmind_to_canvas.py`）：完成，正在跑測試檔案驗證排版
-- 測試進度：尤里教 ✓、金字塔原理 ✓、**筆記類型（進行中）**、投資方法（待）、ＢＤ２（待）
+- 工具二（`xmind_to_canvas.py`）：主體完成，投資方法測試中，有已知 BUG 待修
+- 測試進度：尤里教 ✓、金字塔原理 ✓、筆記類型 ✓、**投資方法（進行中）**、ＢＤ２（待）
 
 ### 下一步優先順序（B 區塊）
-1. 跑完 `筆記類型.xmind` → 確認排版效果，調整參數
-2. 跑 `投資方法.xmind`（路徑：`I:\Obsidian Note\...\投資方法.xmind`）
-3. 跑 `ＢＤ２.xmind`（桌面）
-4. 全部 OK 後 → 設計「AI 填入心智圖」workflow，以 BD2 資料為測試素材
+1. 跑 `ＢＤ２.xmind`（桌面）
+2. 全部 OK 後 → 設計「AI 填入心智圖」workflow，以 BD2 資料為測試素材
+3. 修 boundary 第一子節點 BUG（詳見障礙區）
 
 ### B 區塊：排版參數現況（xmind_to_canvas.py）
 
 | 參數 | 值 | 說明 |
 |------|----|------|
-| NODE_W | 260 | 節點寬度 |
-| NODE_H | 60 | 節點高度 |
-| H_STEP_WIDE | 420 | boundary 層以上的水平間距 |
-| H_STEP_NARROW | 340 | boundary 層以下的水平間距 |
-| V_GAP | 28 | 同層節點垂直間距 |
-| SECTION_GAP | 64 | L1 區塊間額外間距 |
+| NODE_W_MIN | 260 | 節點最小寬度 |
+| NODE_H | 60 | 節點最小高度 |
+| CHARS_PER_LINE | 15 | 每行估算字數（CJK） |
+| CHAR_W | 14 | CJK 字元估算寬度（px） |
+| LINE_H | 22 | 每行文字高度（px） |
+| H_GAP_WIDE | 240 | boundary 層以上水平間距（parent 右邊到 child 左邊） |
+| H_GAP_NARROW | 140 | 深層或無 boundary 水平間距 |
+| V_GAP | 40 | 同層節點垂直間距 |
+| SECTION_GAP | 192 | L1 區塊間額外間距 |
 | GROUP_PAD_X | 16 | group box 水平內縮 |
 | GROUP_PAD_Y | 8 | group box 垂直內縮 |
 | GROUP_MARGIN | 120 | group box 外部間距（baked 進排版） |
@@ -86,6 +88,11 @@
 ### B 區塊：障礙 / 注意事項
 - **GROUP_MARGIN 實作重點**：加在 `_children_span` 的首尾 + `_layout` 的 cur_y 起點，才能往上傳給 grandparent 的 subtree height，空間真正留出來
 - boundary range `(0, n-1)` 覆蓋全部子節點時，舊做法（只加中間間隔）無效，需首尾都加
+- **⚠️ 已知 BUG（待修）**：boundary 群組最上方的子節點若有自己的子節點，子節點內容可能與群組框標籤或上方節點重疊。
+  - 已嘗試：在 `_children_span` 和 `_layout` 的 GROUP_MARGIN 之後額外加 V_GAP（當 `children[0]` 有子節點時），但效果不足，問題尚未完全解決。
+  - 根本原因：當 span > nh 時，第一個子節點的子節點從 `cur_y`（allocation 頂端）開始，group box 上緣僅 GROUP_PAD_Y=8 的間距，群組標籤與內容重疊。
+  - 下次修法方向：考慮增大 GROUP_PAD_Y，或在 `_build_groups` 的 `min_y` 計算時額外減去 V_GAP。
+- **投資方法.xmind 正確路徑**：`I:\Obsidian Note\Obsidan-Notes-Merge-Version\_Storing Books\_Investment\_How to investment\投資方法.xmind`（不在 Fleeting Note 目錄）
 - 工具腳本路徑：`active/workingData/Meow-Toolbox/Xmind/tools/`
 - 測試輸出路徑：桌面（`C:\Users\AkatsukiNeko\Desktop\`）
 - 尤里教聯合體系 xmind 路徑有**雙空格**：`尤里教聯合體系  (Yuri United).xmind`

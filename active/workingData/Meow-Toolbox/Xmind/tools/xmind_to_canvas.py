@@ -2,29 +2,64 @@
 xmind_to_canvas.py - Xmind 轉 Obsidian Canvas 工具
 排版：L1 節點由上往下排列，L2+ 向右延伸，L1 區塊間有明確間距
 支援 boundaries（Xmind 圈選框）→ Canvas group 節點
+節點寬高依文字量動態計算
 """
 
 import json
 import uuid
 import sys
 import os
+import math
 
 sys.path.insert(0, os.path.dirname(__file__))
 from xmind_reader import read_xmind, get_root_topic
 
 # ── 排版參數 ──────────────────────────────────────────
-NODE_W        = 260   # 節點寬度
-NODE_H        = 60    # 節點高度
-H_STEP_WIDE   = 420   # 有 boundary 時上層使用的水平間距
-H_STEP_NARROW = 340   # 深層或無 boundary 時的水平間距
-V_GAP         = 28    # 同層節點垂直間距
-SECTION_GAP   = 64    # L1 區塊間額外間距
-GROUP_PAD_X   = 16    # group 水平 padding（內縮）
-GROUP_PAD_Y   = 8     # group 垂直 padding（< V_GAP/2）
-GROUP_MARGIN  = 120   # group 向外的最小間距（CSS margin 概念），baked 進排版
-NEST_PAD      = 14    # 巢狀 group 外框最小超出距離
+NODE_W_MIN     = 260   # 節點最小寬度
+NODE_H         = 60    # 節點最小高度
+CHARS_PER_LINE = 15    # 每行估算字數（CJK）
+CHAR_W         = 14    # CJK 字元估算寬度（px），用於動態寬度計算
+NODE_W_PAD     = 40    # 節點左右留白（寬度估算用）
+LINE_H         = 22    # 每行文字高度（px）
+NODE_V_PAD     = 20    # 節點上下留白
+
+H_GAP_WIDE     = 240   # boundary 層以上：parent 右邊到 child 左邊的間距
+H_GAP_NARROW   = 140   # 深層或無 boundary：parent 右邊到 child 左邊的間距
+V_GAP          = 40    # 同層節點垂直間距
+SECTION_GAP    = 192   # L1 區塊間額外間距
+GROUP_PAD_X    = 16    # group 水平 padding（內縮）
+GROUP_PAD_Y    = 8     # group 垂直 padding（< V_GAP/2）
+GROUP_MARGIN   = 120   # group 向外的最小間距（CSS margin 概念），baked 進排版
+NEST_PAD       = 14    # 巢狀 group 外框最小超出距離
 
 L1_COLORS = ["4", "5", "3", "2", "6", "1"]  # 綠/藍/黃/橘/紫/紅
+
+
+# ── 節點尺寸計算 ──────────────────────────────────────
+
+def _node_height(title: str) -> int:
+    """根據文字行數動態估算節點高度（+1 行緩衝補償 Canvas 渲染誤差）"""
+    if not title:
+        return NODE_H
+    lines = title.split('\n')
+    rows = 0
+    for line in lines:
+        stripped = line.strip()
+        if stripped:
+            rows += max(1, math.ceil(len(stripped) / CHARS_PER_LINE))
+        else:
+            rows += 1
+    rows += 1  # 補一行緩衝，避免 Canvas 渲染時最後一行被截
+    return max(NODE_H, rows * LINE_H + NODE_V_PAD)
+
+
+def _node_width(title: str) -> int:
+    """有換行字元時，依最長行字數動態延伸寬度，確保不折行"""
+    if '\n' not in title or not title:
+        return NODE_W_MIN
+    lines = title.split('\n')
+    max_chars = max((len(l.strip()) for l in lines if l.strip()), default=0)
+    return max(NODE_W_MIN, max_chars * CHAR_W + NODE_W_PAD)
 
 
 # ── Boundary 深度偵測 ─────────────────────────────────
@@ -78,16 +113,17 @@ def _children_span(node: dict) -> int:
     margin_before, margin_after = _get_boundary_sets(node)
     n = len(children)
     total = 0
-    # boundary 覆蓋首個子節點時，頂部保留 GROUP_MARGIN
     if 0 in margin_before:
         total += GROUP_MARGIN
+        # 第一個子節點有自己的子節點時，額外加 V_GAP，避免群組框標籤與內容重疊
+        if children[0].get('children', {}).get('attached', []):
+            total += V_GAP
     total += _subtree_height(children[0])
     for i in range(1, n):
         gap = V_GAP
         if (i - 1) in margin_after or i in margin_before:
             gap += GROUP_MARGIN
         total += gap + _subtree_height(children[i])
-    # boundary 覆蓋末個子節點時，底部保留 GROUP_MARGIN
     if (n - 1) in margin_after:
         total += GROUP_MARGIN
     return total
@@ -95,23 +131,38 @@ def _children_span(node: dict) -> int:
 
 def _subtree_height(node: dict) -> int:
     children = node.get('children', {}).get('attached', [])
+    nh = _node_height(node.get('title', ''))
     if not children:
-        return NODE_H
-    return max(NODE_H, _children_span(node))
+        return nh
+    return max(nh, _children_span(node))
 
 
 def _layout(node: dict, x: int, y: int, depth: int, color: str,
             nodes: list, edges: list, parent_id: str,
             h_step_fn):
-    """遞迴擺放節點與連線，h_step_fn(depth) 回傳當層水平間距"""
+    """
+    遞迴擺放節點與連線。
+    h_step_fn(depth) 回傳 parent 右邊到 child 左邊的間距（H_GAP）。
+    child_x = x + nw + h_step_fn(depth)
+    """
     nid = node.get('id') or str(uuid.uuid4())
     children = node.get('children', {}).get('attached', [])
-    title = node.get('title', '').replace('\n', ' ').strip()
+    title = node.get('title', '').strip()  # 保留 \n 讓 Canvas 正確換行
+    nh = _node_height(title)
+    nw = _node_width(title)
 
-    if children:
-        node_y = y + (_children_span(node) - NODE_H) / 2
-    else:
+    span = _children_span(node) if children else 0
+    if not children:
         node_y = y
+        children_start = y
+    elif span >= nh:
+        # 子節點群高度 >= 節點高度：節點置中於子節點群
+        node_y = y + (span - nh) / 2
+        children_start = y
+    else:
+        # 節點高度 > 子節點群高度：節點貼頂，子節點群向下置中
+        node_y = y
+        children_start = y + (nh - span) / 2
 
     entry = {
         "id": nid,
@@ -119,8 +170,8 @@ def _layout(node: dict, x: int, y: int, depth: int, color: str,
         "text": title,
         "x": round(x),
         "y": round(node_y),
-        "width": NODE_W,
-        "height": NODE_H,
+        "width": nw,
+        "height": nh,
     }
     if color:
         entry["color"] = color
@@ -135,12 +186,17 @@ def _layout(node: dict, x: int, y: int, depth: int, color: str,
             "toSide": "left",
         })
 
+    if not children:
+        return
+
     margin_before, margin_after = _get_boundary_sets(node)
-    child_x = x + h_step_fn(depth)
-    cur_y = y
-    # boundary 覆蓋首個子節點時，頂部先空出 GROUP_MARGIN
-    if children and 0 in margin_before:
+    child_x = x + nw + h_step_fn(depth)  # h_step_fn 回傳 H_GAP
+    cur_y = children_start
+    if 0 in margin_before:
         cur_y += GROUP_MARGIN
+        # 對齊 _children_span：第一個子節點有子節點時額外加 V_GAP
+        if children[0].get('children', {}).get('attached', []):
+            cur_y += V_GAP
     for i, child in enumerate(children):
         _layout(child, child_x, cur_y, depth + 1, color,
                 nodes, edges, nid, h_step_fn)
@@ -244,24 +300,31 @@ def convert(xmind_path: str, canvas_path: str, sheet_index: int = 0) -> str:
     root = get_root_topic(data, sheet_index)
     nodes, edges = [], []
 
-    # 偵測最淺 boundary 深度，決定 H_STEP 和 ROOT_X
+    # 偵測最淺 boundary 深度，決定每層 H_GAP
     d_boundary = _find_boundary_depth(root)
     if d_boundary:
-        root_x = -(d_boundary * (H_STEP_WIDE - H_STEP_NARROW))
-        def h_step_fn(depth): return H_STEP_WIDE if depth < d_boundary else H_STEP_NARROW
+        def h_step_fn(depth): return H_GAP_WIDE if depth < d_boundary else H_GAP_NARROW
     else:
-        root_x = 0
-        def h_step_fn(depth): return H_STEP_NARROW
+        def h_step_fn(depth): return H_GAP_NARROW
+
+    root_title = root.get('title', '').strip()
+    root_nh = _node_height(root_title)
+    root_nw = _node_width(root_title)
 
     l1_nodes = root.get('children', {}).get('attached', [])
 
-    # 計算每個 L1 節點的 y 座標，取中位數給 Root 用
+    # 計算每個 L1 節點的 top y（與 _layout 邏輯一致），取中位數給 Root 對齊用
     l1_y_centers, cur_y = [], 0
     for i, child in enumerate(l1_nodes):
         if i > 0:
             cur_y += SECTION_GAP
         sh = _subtree_height(child)
-        node_y = cur_y + (sh - NODE_H) / 2 if sh > NODE_H else cur_y
+        child_nh = _node_height(child.get('title', ''))
+        child_span = _children_span(child) if child.get('children', {}).get('attached', []) else 0
+        if not child.get('children', {}).get('attached', []) or child_span < child_nh:
+            node_y = cur_y
+        else:
+            node_y = cur_y + (child_span - child_nh) / 2
         l1_y_centers.append(node_y)
         cur_y += sh + V_GAP
 
@@ -269,20 +332,19 @@ def convert(xmind_path: str, canvas_path: str, sheet_index: int = 0) -> str:
     root_y = l1_y_centers[n // 2] if n % 2 == 1 else (l1_y_centers[n // 2 - 1] + l1_y_centers[n // 2]) / 2
 
     root_id = root.get('id') or str(uuid.uuid4())
-    root_title = root.get('title', '').replace('\n', ' ').strip()
     nodes.append({
         "id": root_id,
         "type": "text",
         "text": root_title,
-        "x": round(root_x),
+        "x": 0,
         "y": round(root_y),
-        "width": NODE_W,
-        "height": NODE_H,
+        "width": root_nw,
+        "height": root_nh,
     })
 
-    # 擺放所有節點，depth=0 → L1 用 h_step_fn(0)
+    # 擺放所有節點，depth=0 → L1
     cur_y = 0
-    l1_x = root_x + h_step_fn(0)
+    l1_x = root_nw + h_step_fn(0)
     for i, child in enumerate(l1_nodes):
         if i > 0:
             cur_y += SECTION_GAP
