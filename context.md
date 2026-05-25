@@ -1,5 +1,5 @@
 # Meow-Dev 工作上下文
-更新時間：2026-05-26 00:20
+更新時間：2026-05-26 01:10
 
 ---
 
@@ -107,11 +107,11 @@
 
 > 工具定位：金字塔原理 × 分而治之 × 問題追蹤器，用於釐清方向、探索問題、沉澱洞見
 
-### 目前狀態：✅ v0.2 完成 + 周邊配置完成（2026-05-26）
+### 目前狀態：✅ v0.2 完成 + 解耦合重構完成（2026-05-26）
 
 **核心工具**
 - Python CLI：`D:\Meow-Env\Meow-Dev\active\inquiry_model\`，執行 `python run.py`
-- Demo 腳本：`_demo_run.py`（模擬輸入跑完整流程）
+- Demo 腳本：`_demo_run.py`（傳入 `input_fn=_mock_input` 跑完整流程，不再 monkey-patch）
 
 **Sessions 存放位置（已解耦）**
 - `D:\Meow-Env\Meow-Dev\active\inquiry_sessions\`（工具搬至 Meow-Tools 後 sessions 仍留在 Meow-Dev）
@@ -127,19 +127,32 @@
 - 工具版（AI_Read）：9 份，供 inquiry_model 讀取
 - Wiki 備份：7 份 `ref-*.md` 已存入 `Meow-Wiki/wiki/concepts/`，`reviewed: false` 待人工確認
 
-**架構**
+**架構（解耦合後）**
 ```
 inquiry_model/
   run.py / _test_pipeline.py / _demo_run.py
-  core/  llm.py / decomposer.py / questioner.py / synthesizer.py / recorder.py / json_utils.py
-  frameworks/  pyramid.py
+  core/
+    llm.py            # API 層（換 provider 只改這裡）
+    decomposer.py     # 主題拆解
+    questioner.py     # 支柱詢問（input_fn 注入，I/O 與邏輯分離）
+    synthesizer.py    # 彙整輸出（含 session→prompt 轉換，不再依賴 pyramid）
+    reality_checker.py # Reality Check LLM 呼叫（從 run.py 抽出）
+    recorder.py       # session 結構與存檔
+    json_utils.py     # 穩健 JSON 解析
+  frameworks/
+    pyramid.py        # 純 prompt 字串（不含任何業務邏輯）
   .env  (GROQ_API_KEY)
 ```
 
 ### 下一步優先順序（C 區塊）
 1. 用真實主題跑 `/inquiry` 或 `python run.py`
-2. 工具穩定後搬至 `Meow-Tools`（只需改 `recorder.py` 工具本體路徑，sessions 不動）
+2. 工具穩定後搬至 `Meow-Tools`（只需改 `recorder.py` 的 sessions 絕對路徑）
 3. MW 那 7 份思維框架文件，有空時人工補充確認（`reviewed: true`）
+
+### C 區塊：障礙 / 注意事項
+- sessions 使用絕對路徑（`D:/Meow-Env/Meow-Dev/active/inquiry_sessions`），工具搬家時須同步修改 `recorder.py`
+- API：Groq（llama-3.3-70b-versatile），14,400 req/day 免費
+- LLM 回應常包在 ```json...``` 內 → `json_utils.py` 多重 fallback 解決
 
 ### C 區塊：障礙 / 注意事項
 - sessions 使用絕對路徑（`D:/Meow-Env/Meow-Dev/active/inquiry_sessions`），工具搬家時須同步修改 `recorder.py`
