@@ -1,5 +1,5 @@
 # Meow-Dev 工作上下文
-更新時間：2026-05-22 16:30
+更新時間：2026-05-25 22:14
 
 ---
 
@@ -100,3 +100,59 @@
 - 工具腳本路徑：`active/workingData/Meow-Toolbox/Xmind/tools/`
 - 測試輸出路徑：桌面（`C:\Users\AkatsukiNeko\Desktop\`）
 - 尤里教聯合體系 xmind 路徑有**雙空格**：`尤里教聯合體系  (Yuri United).xmind`
+
+---
+
+## ▌作業區塊 C：inquiry_model 結構化詢問工具
+
+> 工具定位：金字塔原理 × 分而治之 × 問題追蹤器，用於釐清方向、探索問題、沉澱洞見
+
+### 目前狀態：✅ v0.2 完成，pipeline 測試通過
+
+**架構**
+```
+inquiry_model/
+  run.py                  # 主程式（互動式 CLI）
+  _test_pipeline.py       # 完整 pipeline 非互動測試
+  core/
+    llm.py                # Groq API（llama-3.3-70b-versatile）
+    decomposer.py         # 主題拆解 → 核心主張 + 三支柱
+    questioner.py         # 支柱詢問 + 追問（depth ≤ 3）
+    synthesizer.py        # 彙整輸出 Markdown
+    recorder.py           # session 結構 + 存檔
+    json_utils.py         # LLM 回應的穩健 JSON 解析
+  frameworks/
+    pyramid.py            # 所有 prompt 定義（分解 / 追問 / 彙整）
+  sessions/               # 輸出目錄（.md + .json）
+  .env                    # GROQ_API_KEY=gsk_xxx（已設定）
+  .env.example
+```
+
+**已實作功能**
+- explore / clean 兩種模式（啟動時選擇）
+- 可選 Reality Check 前置詢問（GROW Model）
+- 支柱詢問迴圈（depth ≤ 3）
+- 問題追蹤器：收集未解決問題，可選繼續處理
+- 盲點揭露（Johari Window）、蘇格拉底視角/後果衍生問題（可選）
+- Markdown 彙整含盲點提醒 + 待續問題區段
+- session 存為 .md 和 .json
+
+**workingData 思維框架文件（`active/workingData/思維框架/`）**
+- `(AI_Read) 思維框架整合索引.md` — 入口索引 + 框架關係圖
+- `(AI_Read) 金字塔理論與分而治之框架.md`
+- `(AI_Read) 如何問好問題.md`
+- `(AI_Read) 高品質驗證資料篩選準則.md`
+- `(AI_Read) 與AI工具協作共長思維.md`
+- `(AI_Read) GROW_Reality前置詢問.md`
+- `(AI_Read) 蘇格拉底視角與後果提問.md`
+- `(AI_Read) Powerful_Questions原則.md`
+- `(AI_Read) Clean_Language潔淨語言.md`
+
+### 下一步優先順序（C 區塊）
+1. 跑 `python run.py` 進行真實互動測試
+2. 依使用體驗調整 prompt 語氣 / 追問邏輯
+
+### C 區塊：障礙 / 注意事項
+- Gemini 免費額度每日僅 20 次，不夠測試用 → 已改用 Groq（14,400/day）
+- LLM 回應常包在 ```json...``` 內且字串內有 literal newline → `json_utils.py` 多重 fallback 解決
+- API rate limit：測試腳本各呼叫間加 `time.sleep(2)`
