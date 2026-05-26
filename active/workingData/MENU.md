@@ -17,6 +17,7 @@
 | `design-systems/` | 設計系統 | 品牌設計規範，依品牌分子目錄；詳見 `design-systems/README.md` |
 | `思維框架/` | 個人思維框架 | 金字塔理論、問好問題、驗證資料、AI 協作思維；入口：`思維框架整合索引.md` |
 | `專案/BD2/` | 專案材料 | BD2 遊戲相關的影片腳本與爬蟲工具 |
+| `外部工具研究/` | 外部工具調查 | 安裝前的安全性審查與功能評估報告 |
 
 ---
 
@@ -57,6 +58,14 @@ MD（Meow-Dev）暫存的 AI 協作文件：角色定義、架構設計思路、
 | 蘇格拉底視角與後果提問 | 開放性問題的視野擴展（可選） | AI讀 |
 | Powerful_Questions原則 | 一次一問 + 問題追蹤器原則 | AI讀 |
 | Clean_Language潔淨語言 | 使用者限定範圍時的單線程模式 | AI讀 |
+
+### 外部工具研究/
+安裝前調查報告，包含安全性審查、功能評估與使用建議。
+
+| 文件 | 使用情境 | 類型 |
+|------|---------|------|
+| `ConardLi_garden-skills 調查報告.md` | 考慮安裝 garden-skills 前的全面評估 | AI讀 |
+| `ConardLi_garden-skills_深度拆解.md` | garden-skills 各 Skill 工程細節，含 reference 文件展開版 | AI讀 |
 
 ### 專案/BD2/
 BD2（Blue Archive II）遊戲相關專案材料。

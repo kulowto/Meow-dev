@@ -1,5 +1,5 @@
 # Meow-Dev 工作上下文
-更新時間：2026-05-26 01:10
+更新時間：2026-05-27 00:00
 
 ---
 
@@ -154,7 +154,32 @@ inquiry_model/
 - API：Groq（llama-3.3-70b-versatile），14,400 req/day 免費
 - LLM 回應常包在 ```json...``` 內 → `json_utils.py` 多重 fallback 解決
 
-### C 區塊：障礙 / 注意事項
-- sessions 使用絕對路徑（`D:/Meow-Env/Meow-Dev/active/inquiry_sessions`），工具搬家時須同步修改 `recorder.py`
-- API：Groq（llama-3.3-70b-versatile），14,400 req/day 免費
-- LLM 回應常包在 ```json...``` 內 → `json_utils.py` 多重 fallback 解決
+---
+
+## ▌作業區塊 D：外部工具研究 — ConardLi / garden-skills（2026-05-27）
+
+> 本次完成了 ConardLi 的 garden-skills repo 全面調查 + 深度技術拆解
+
+### 已完成
+
+- 建立調查報告（安全性 + 項目全覽）：
+  `active/workingData/外部工具研究/ConardLi_garden-skills 調查報告.md`
+- 建立深度拆解文件（工程規劃用，含所有 reference 文件展開版）：
+  `active/workingData/外部工具研究/ConardLi_garden-skills_深度拆解.md`
+- 更新 `active/workingData/MENU.md`，補登兩份文件
+
+### ⭐ 下次請先閱讀
+
+1. **調查報告**（決定是否安裝、裝哪幾個）：
+   `active/workingData/外部工具研究/ConardLi_garden-skills 調查報告.md`
+
+2. **深度拆解**（工程規劃 + 可採納機制參考）：
+   `active/workingData/外部工具研究/ConardLi_garden-skills_深度拆解.md`
+   - Section 1：web-design-engineer（七步流程 / 六大學派 / 25 個食譜 / Anti-Cliché / oklch / 代碼規範）
+   - Section 2：web-video-presentation（章節鐵律 / CHAPTER-CRAFT / TTS / 23 主題）
+   - Section 3：kb-retriever
+   - Section 5：Reference 展開版（advanced-patterns / critique-guide / gpt-image-2 模板方法論）
+
+### D 區塊：障礙 / 注意事項
+- `dist/prompt/claude-design-system-prompt.md` 目前 404（已從 repo 移除），需要原版 prompt 時另外搜尋
+- 安裝決策建議：`web-design-engineer` 現在就裝、`web-video-presentation` 有影片需求就裝、其他兩個暫緩
