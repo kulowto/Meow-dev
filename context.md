@@ -1,5 +1,5 @@
 # Meow-Dev 工作上下文
-更新時間：2026-06-01 09:50
+更新時間：2026-06-01 10:07
 
 ---
 
@@ -183,7 +183,12 @@ inquiry_model/
 **Meow-Wiki 知識文件新增**
 - `MW/wiki/concepts/ref-image-prompt-architecture.md`：JSON 架構 + 六大平台翻譯規則
 
-**出處追蹤**：所有衍生 Skill 均已補入 `source_repo` / `source_file` / 更新檢查清單
+**出處追蹤**：所有衍生 Skill 均已補入 `source_repo` / `source_file` / `installed_date` / 更新檢查清單
+
+**全域 Skill 來源追蹤規範（新建）**
+- `MF/governance/collaboration/(AI_Read) (Global Prompt) Skill 來源追蹤規範.md`
+- 五條強制規則：frontmatter 必填欄位 / 自建說明 / 末尾追蹤區塊 / Changelog / CLAUDE.md 來源欄格式
+- 已引用至 `MF/CLAUDE.md`（安裝工具流程區塊）與 `MA/CLAUDE.md`（已安裝 Skills 區塊）
 
 ### D 區塊：障礙 / 注意事項
 - `dist/prompt/claude-design-system-prompt.md` 目前 404（已從 repo 移除），需要原版 prompt 時另外搜尋
