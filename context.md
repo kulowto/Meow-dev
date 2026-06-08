@@ -188,7 +188,7 @@ inquiry_model/
 **全域 Skill 來源追蹤規範（新建）**
 - `MF/governance/collaboration/(AI_Read) (Global Prompt) Skill 來源追蹤規範.md`
 - 五條強制規則：frontmatter 必填欄位 / 自建說明 / 末尾追蹤區塊 / Changelog / CLAUDE.md 來源欄格式
-- 已引用至 `MF/CLAUDE.md`（安裝工具流程區塊）與 `MA/CLAUDE.md`（已安裝 Skills 區塊）
+- 已引用至 `MF/CLAUDE.md`（安裝工具流程區塊）與 `MA/ssot/core/skills-registry.md`（Skills 來源矩陣）
 
 ### D 區塊：障礙 / 注意事項
 - `dist/prompt/claude-design-system-prompt.md` 目前 404（已從 repo 移除），需要原版 prompt 時另外搜尋
