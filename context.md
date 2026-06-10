@@ -1,5 +1,5 @@
 # Meow-Dev 工作上下文
-更新時間：2026-06-01 10:07
+更新時間：2026-06-10 (更新：新增作業區塊 F)
 
 ---
 
@@ -156,41 +156,124 @@ inquiry_model/
 
 ---
 
-## ▌作業區塊 D：外部工具研究 — ConardLi / garden-skills（✅ 完成 2026-06-01）
+## ▌作業區塊 E：oral-script Skill 開發
 
-### 已完成（本次新增）
+> 文字 → 口播稿轉換 Skill 群，三支 Skill 解耦合架構
 
-**Skills 安裝**
-- `web-design-engineer`：已安裝（npx，copied 方式）
-- `web-video-presentation`：已安裝（npx，copied 方式）
-- `kb-retriever` / `gpt-image-2`：暫不安裝，已閱讀細部資訊供評估
+### 架構決策（2026-06-08 確認）
 
-**文件更新（Meow-Agent CLAUDE.md）**
-- 補入 `web-design-engineer` / `web-video-presentation` 使用情境
-- `REGISTRY.md` 補入兩個新能力映射條目
+採解耦合設計，拆為三支 Skill：
 
-**Meow-Wiki 知識庫架構改良（kb-retriever 啟發）**
-- `MENU.md` 精簡為純域名指針（6 個域）
-- 各域新增 `_DataStructure_INDEX.md`（concepts / entities / sources / syntheses / assets）
-- 新增 `wiki/assets/` 域（存放 PDF / Excel 實體文件）
-- 新增 `references/pdf_reading.md` + `references/excel_reading.md`
-- 更新 `CLAUDE.md`：補目錄結構 + 導航流程說明
+| Skill | 職責 | 指令 |
+|-------|------|------|
+| `oral-script-plan` | 內容 → 章節結構（Skill A） | `/oral-script-plan` |
+| `oral-script-write` | 結構 + 補充資料 → 口播稿（Skill B） | `/oral-script-write` |
+| `oral-script` | 快速模式，依序執行 A + B | `/oral-script` |
 
-**MF Skills 建立**
-- `MF/governance/skills/wiki-query/skill.md`：知識庫分層檢索 Skill（v1.0，來源：kb-retriever）
-- `MF/governance/skills/image-prompt/skill.md`：萬用圖片提示詞架構 Skill（v1.0，來源：gpt-image-2）
+兩個 Skill 之間透過 **session.md** 傳遞狀態（interface contract）。
 
-**Meow-Wiki 知識文件新增**
-- `MW/wiki/concepts/ref-image-prompt-architecture.md`：JSON 架構 + 六大平台翻譯規則
+### Session 狀態檔格式（A → B 的介面契約）
 
-**出處追蹤**：所有衍生 Skill 均已補入 `source_repo` / `source_file` / `installed_date` / 更新檢查清單
+```
+D:/Meow-Env/Meow-Dev/active/oral-script/YYYYMMDD-[名稱]-session.md
+```
 
-**全域 Skill 來源追蹤規範（新建）**
-- `MF/governance/collaboration/(AI_Read) (Global Prompt) Skill 來源追蹤規範.md`
-- 五條強制規則：frontmatter 必填欄位 / 自建說明 / 末尾追蹤區塊 / Changelog / CLAUDE.md 來源欄格式
-- 已引用至 `MF/CLAUDE.md`（安裝工具流程區塊）與 `MA/ssot/core/skills-registry.md`（Skills 來源矩陣）
+內容：風格選擇 + 原始輸入內容 + 已確認章節架構 + 補充資料路徑（選填）
 
-### D 區塊：障礙 / 注意事項
-- `dist/prompt/claude-design-system-prompt.md` 目前 404（已從 repo 移除），需要原版 prompt 時另外搜尋
-- Skills 安裝路徑：`.agents/skills/`，Windows 無 Developer Mode 故為 copied 方式（功能正常）
-- 上游更新追蹤：`https://github.com/ConardLi/garden-skills`，更新時對照 MF Skill 的「更新時檢查項目」清單
+### 文件路徑
+
+| 文件 | 路徑 |
+|------|------|
+| oral-script（快速模式） | `MA/skills/oral-script/` |
+| oral-script-plan（Skill A） | `MA/skills/oral-script-plan/` |
+| oral-script-write（Skill B） | `MA/skills/oral-script-write/` |
+| 共用使用者偏好記憶 | `MA/skills/oral-script/user-prefs.md` |
+| Session 輸出目錄 | `D:/Meow-Env/Meow-Dev/active/oral-script/` |
+
+### 目前狀態（2026-06-08）
+
+- ✅ 三支 Skill 全部實作完成（2026-06-08）
+  - `oral-script-plan`：`MA/skills/oral-script-plan/` + `~/.claude/commands/`
+  - `oral-script-write`：`MA/skills/oral-script-write/` + `~/.claude/commands/`
+  - `oral-script`（快速模式）：`MA/skills/oral-script/` + `~/.claude/commands/` (v2.0)
+- ✅ `skills-registry.md` 補錄三筆
+- ✅ session.md 介面契約定義完成
+- ⏳ **下一步**：用真實內容跑 `/oral-script-plan` 試跑，驗證流程與 session.md 格式
+
+### 實作規格（給下個 AI）
+
+**oral-script-plan/skill.md 職責**：
+- Step 0：讀 `MA/skills/oral-script/user-prefs.md`
+- Step 1：確認輸入（$ARGUMENTS 或詢問）
+- Step 2：用 AskUserQuestion 問風格（四選一）
+- Step 3：分析內容，輸出章節架構表，等確認
+- Step 4：確認後儲存 session.md 至 `MD/active/oral-script/YYYYMMDD-[名]-session.md`
+  - session.md 包含：風格、語速基準、原始輸入、確認架構、補充資料路徑（選填）
+- 完成後告知使用者：「結構已儲存，執行 /oral-script-write 繼續生成口播稿」
+
+**oral-script-write/skill.md 職責**：
+- Step 0：讀最新 session.md（或請使用者指定）+ 讀 user-prefs.md
+- Step 1：生成第一章節（含開場 Hook）→ 等確認（可多輪修改）
+- Step 2：確認後 → 儲存 style-ref.md + 更新 user-prefs.md
+- Step 3：一次生成所有後續章節（參照 style-ref + user-prefs）
+- Step 4：驗證一致性 → 輸出完整稿 + 驗證報告
+- 風格規則、TTS 標記、輸出格式從現有 oral-script/skill.md 複製
+
+**oral-script/skill.md（快速模式）**：
+- 直接執行 oral-script-plan 全部步驟（不停頓）
+- 緊接執行 oral-script-write 全部步驟
+- 唯一暫停點：Step 3 架構確認 + Step 4 第一章確認（與拆開版一致）
+
+### E 區塊：障礙 / 注意事項
+- TTS 標記格式：TTS 通用標記（平台無關），轉 MiniMax 或其他時另寫 converter
+- session.md 是 A → B 的唯一介面，格式不能隨意改動，需要先改 spec 再改實作
+- oral-script-write 讀 session.md 時，預設讀目錄內最新的一份（依日期排序），若有多份則詢問使用者
+
+---
+
+## ▌作業區塊 F：_pipeline_ComposeAssetsToVideo 系統規劃
+
+> 影片內容製作流水線系統，把獨立能力模組串接成可驗證的影片產出流程
+
+### 目前狀態（2026-06-10 更新）
+
+- ✅ 工作目錄建立：`MD/workingData/専案/_pipeline_ComposeAssetsToVideo/`
+- ✅ 討論記錄更新至 v0.2（含圖層驗證結論 + 群組問題記錄）
+- ✅ HTML vs After Effects 分工邊界確認
+- ✅ AI 圖層能力實作驗證完成（4 張參考圖）
+- ⏳ **下一步**：研究如何串接 Figma API，讓 AI 能直接在 Figma 建立版型
+
+### 核心架構決策（已確認）
+
+1. **模組解耦**：各能力模組獨立存在，此專案只做索引 + 驗證
+2. **半自動化**：關鍵節點人工審核，不全自動
+3. **確認工作流**：圖片 → AI 分析圖層 → Figma 建立版型 → 使用者審核調整 → HTML 輸出
+4. **HTML 先行**：現階段優先做 HTML 影片樣本，AE 後續階段
+
+### HTML vs AE 分工（已確認）
+
+| | HTML | After Effects |
+|---|---|---|
+| 適用類型 | 教學、資訊說明（PPT 式效果） | 精緻動畫、品牌影片 |
+| 前置資訊 | 少（Figma 模板 + 口播稿） | 多（三視圖、分鏡、腳本） |
+| 現階段 | ✅ 優先 | 後續階段 |
+
+### AI 圖層能力驗證結論
+
+- 圖層分離理解**基本正確**（除複雜照片合成外）
+- **已知限制**：群組問題——AI 傾向把多行文字拆成獨立元素，而非單一文字框含換行
+- 這是人工審核節點的主要工作項目之一
+- 詳細記錄：`MD/workingData/専案/_pipeline_ComposeAssetsToVideo/討論記錄_v0.1.md`
+
+### 下一步優先順序（F 區塊）
+
+1. **研究 Figma API 串接**：AI 如何讀取圖片後在 Figma 建立正確的圖層與群組結構
+2. 定義 HTML 影片樣板規格（第一個樣本）
+3. 確認各功能模組的 home（`MA/skills/` vs `Meow-Tools/`）
+
+### F 區塊：障礙 / 注意事項
+
+- 群組問題：AI 輸出 Figma 時需要明確指定文字框結構，避免每行獨立
+- 去背素材（透明 PNG）是上游步驟，Figma/PS 負責，HTML 只負責排版
+- 各功能模組 home 尚未確定，建第一個模組時要先決定
+
