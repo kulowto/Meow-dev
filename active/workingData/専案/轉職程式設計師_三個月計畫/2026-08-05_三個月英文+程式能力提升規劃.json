@@ -1,0 +1,59 @@
+{
+  "topic": "三個月英文+程式能力提升規劃：LeetCode(Grind75/NeetCode思維分類)刷題、Spaced Repetition學習記錄、UMPIRE法則面試溝通訓練",
+  "mode": "explore",
+  "reality_summary": "目前想轉職程式設計師，以前有程式背景但太久沒用，需要複習並補強弱項。計畫用Grind75/NeetCode做思維分類刷題，搭配Spaced Repetition記錄複習，並用UMPIRE法則練習面試表達。",
+  "core_claim": "在三個月內，透過以思維模式分類的刷題+Spaced Repetition記錄複習+UMPIRE法則面試表達訓練三條主線分階段並行，讓中斷已久的程式能力回到可轉職面試的水準，英文能力作為長期背景目標逐步吸收。",
+  "pillars": [
+    {
+      "question": "刷題與知識覆蓋：範疇、排序與完成定義",
+      "answer": "Grind75跟NeetCode兩者未來都會做；完成定義最終目標是不看提示、限時、手寫出可執行程式碼，過程分四階段記錄：寫不出來/有Bug/超時/限時內完成；每週5天、每天4小時可投入；面試上希望先跟對方討論Happy Case、Edge Case，並用UMPIRE檢視表達是否模糊",
+      "followups": [
+        {
+          "question": "時間分配是階段性還是平均規劃？",
+          "answer": "階段性規劃：前期以刷題跟複習為重，最後一個月開始加強UMPIRE面試練習。英文非硬需求（面試對象是台商），但長期認為程式設計師終究會用到，同時學習但慢慢加強",
+          "depth": 2,
+          "question_type": "方法驗證"
+        }
+      ],
+      "insight": "分階段而非平均分配：前2個月主攻刷題+SRS打底硬實力，最後1個月疊加UMPIRE面試表達練習；英文是背景長期目標，不佔專門時段",
+      "blind_spot": "Grind75與NeetCode 150題庫高度重疊，若不先做交集/聯集規劃，容易造成同一思維模式重複刷題卻沒有增量學習",
+      "resolved": true,
+      "pending_followup": null
+    },
+    {
+      "question": "Spaced Repetition學習記錄系統的設計",
+      "answer": "希望AI提供演算法並做在表格裡；工具偏好Google Sheet或Obsidian純MD檔（Obsidian長期用戶希望能在上面顯示使用）；欄位設想：LeetCode題號、Question Name、Key Cogitation、Level、Date1..N（顏色標示做題品質：寫不出來/有Bug/超時/限時內完成）",
+      "followups": [
+        {
+          "question": "Google Sheet跟Obsidian要選哪個當唯一真相來源？Date1...N橫向累加是否改成縱向記錄法以利演算法自動算出下次複習日？",
+          "answer": "只需要其中一個就可以（後選定Google Sheet）；理解縱向雙表設計後同意採用",
+          "depth": 2,
+          "question_type": "方法驗證"
+        }
+      ],
+      "insight": "確定用Google Sheet作單一真相來源，資料結構改為兩表縱向設計：表A總覽表（一題一列，含下次複習日、目前狀態）+ 表B複習紀錄表（每次複習一列，往下累加），演算法讀表B最新狀態算出下次複習日回寫表A",
+      "blind_spot": "Google Sheet與Obsidian若同時維護會有顏色可視化只能在Sheet做、Markdown無法呈現的落差，容易造成雙軌資料不同步",
+      "resolved": true,
+      "pending_followup": null
+    },
+    {
+      "question": "UMPIRE法則面試表達訓練與英文安排",
+      "answer": "練習方式雙軌：真人模擬面試錄音自行復盤；AI輔助則錄音轉文字（手機備忘錄）交給AI針對表達不清楚處給建議；頻率為最後一個月每週5天每天1小時；英文由AI補充各種場景下更好的英文口說表達方式，因涉及文化是自己的盲區，希望漸進吸收，先從聽懂看懂開始",
+      "followups": [
+        {
+          "question": "最後一個月新增每天1小時UMPIRE練習，是否會讓每日總時間超出原本4小時預算？",
+          "answer": "同意第三個月每日投入提高到5小時（刷題節奏不縮水，額外加1小時UMPIRE）",
+          "depth": 2,
+          "question_type": "數據驗證"
+        }
+      ],
+      "insight": "UMPIRE練習採真人模擬+AI輔助復盤雙軌並行，頻率為最後一個月每週5天每天1小時；英文不獨立排時段，融入UMPIRE練習中漸進吸收，先求聽讀理解與文化語境；第三個月每日投入從4小時提高到5小時以容納新增練習",
+      "blind_spot": null,
+      "resolved": true,
+      "pending_followup": null
+    }
+  ],
+  "pending_questions": [],
+  "synthesis": "## 核心主張\n在三個月內，透過「以思維模式分類的刷題（Grind75 + NeetCode）+ Spaced Repetition 記錄複習 + UMPIRE 法則面試表達訓練」三條主線分階段並行，讓中斷已久的程式能力回到可轉職面試的水準，英文能力則作為長期背景目標逐步吸收。\n\n## 三個支柱\n\n### 支柱一：刷題與知識覆蓋（範疇、排序、完成定義）\n題庫Grind75+NeetCode都做但需先規劃交集/聯集避免重複勞動；完成定義分四階段，最終目標限時內完成並能討論Happy/Edge Case；每週5天每天4小時；階段劃分：前2月刷題+SRS，最後1月疊加UMPIRE（該月提升至每日5小時）；英文為長期背景目標不佔獨立時段。\n\n### 支柱二：Spaced Repetition學習記錄系統設計\n演算法採SM-2/Leitner類，內建於表格自動算下次複習日；工具選定Google Sheet為唯一真相來源；資料結構由橫向累加改為兩表縱向設計（總覽表+複習紀錄表）。\n\n### 支柱三：UMPIRE法則面試表達訓練與英文安排\n真人模擬+AI輔助復盤雙軌並行，最後一個月每週5天每天1小時；英文融入UMPIRE練習漸進吸收，先求聽讀理解與文化語境。\n\n## 彙整結論\n整體規劃採「分階段、非平均分配」的三線並行策略：前期集中火力在刷題與Spaced Repetition打底（每日4小時，共兩個月），後期（第三個月）加入UMPIRE面試表達訓練並將每日投入提高到5小時以避免壓縮既有刷題節奏。學習記錄系統確定用Google Sheet做「總覽表＋複習紀錄表」雙表結構，搭配SM-2/Leitner類演算法自動排定複習日。英文能力不佔獨立時段，隨UMPIRE練習漸進累積，聚焦聽讀理解與文化語境先行。\n\n## 盲點提醒\nGrind75與NeetCode 150題庫高度重疊，需先做交集/聯集規劃；Google Sheet與Obsidian雙軌維護風險已排除，僅用Google Sheet；原橫向累加表格設計已改為縱向雙表解決演算法定位問題；第三個月時間衝突已用提高至5小時解決。\n\n## 行動建議\n- 製作Grind75/NeetCode 150題庫交集比對清單，標註重疊題目與思維模式分類\n- 在Google Sheet建立總覽表與複習紀錄表雙表結構，實作SM-2或Leitner演算法公式\n- 規劃三個月階段時間表：第1-2月刷題+SRS（每日4小時），第3月疊加UMPIRE（每日5小時）\n- 規劃第3月錄音自我模擬面試+AI復盤流程SOP\n\n## 待續問題\n無，三個支柱皆已收斂完成。",
+  "timestamp": "2026-08-05 11:05"
+}
