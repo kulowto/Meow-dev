@@ -1,0 +1,2 @@
+LeetCode#,Question Name,Key Cogitation,Level,EF,n,Interval,最近複習日,最近狀態,下次複習日,今日待複習
+1,Two Sum,Hash Map,Easy,2.5,0,1,"=IFERROR(MAX(FILTER(複習紀錄表!B:B, 複習紀錄表!A:A=A2)), """")","=IFERROR(FILTER(複習紀錄表!C:C, 複習紀錄表!A:A=A2, 複習紀錄表!B:B=H2), """")","=IF(H2="""","""",H2+G2)","=IF(J2="""","""",IF(J2<=TODAY(),""✅ 該複習了"",""""))"
