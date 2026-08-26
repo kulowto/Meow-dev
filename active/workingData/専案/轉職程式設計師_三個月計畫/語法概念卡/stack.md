@@ -55,3 +55,4 @@ A4. `push`、`pop`、`top`、`empty` 全部 O(1)。底層預設用 `deque` 實�
 | 題號 | 用法情境 |
 |------|---------|
 | 20 | Valid Parentheses：左括號 push 進 stack，右括號跟 stack 頂端比對，不對或 stack 空就 false；跑完 stack 要為空才是 true |
+| 232 | Implement Queue using Stacks：兩個 stack 互相搬移模擬 FIFO，見 [`class_basics.md`](class_basics.md) |

@@ -4,7 +4,7 @@
 - 對應 C#：`Dictionary<TKey,TValue>`
 
 > 複習時先看 Q，自己講一遍答案，再點開 `<details>` 對答案。答錯或講不出來的，去下面「完整筆記」補。
-> 這是「依值整理」家族的代表，何時該用它、何時不該用，見 [`order_vs_value.md`](order_vs_value.md) 的判斷框架。
+> 這是「依值整理」家族的代表，何時該用它、何時不該用，見 [`order_vs_value.md`](order_vs_value.md) 的判斷框架；跟其他容器的選擇對照，見 [`container_selection.md`](container_selection.md) 速查表。
 
 ## 自我測驗
 
@@ -78,6 +78,10 @@ key 型別限制：內建型別（int、string...）可以直接當 key。自訂
 
 三者共通點：**只要給對 key，不管容器裡裝了多少東西，查一次的時間幾乎不變（O(1)）**，代價是完全不能保證裡面的排列順序。
 
+### key 種類固定且少時，用固定大小陣列取代它更快
+
+`unordered_map` 的彈性（任意型別、任意數量的 key）是有代價的：要算 hash、資料散落在記憶體不同位置、內部會動態配置記憶體。如果 key 的種類**固定又很少**（例如只有 26 個小寫英文字母、10 個數字），直接用一個固定大小陣列（`int count[26]`），透過 `c - 'a'` 轉成索引直接存取，時間複雜度一樣，但常數因子小很多、實測更快（Ransom Note 這題示範過）。key 種類不確定或數量可能很大時，才需要真正用到 `unordered_map` 的彈性。
+
 ### range-based for 是語法糖
 
 `for (auto& [k,v] : m)` 背後等價於 `for (auto it = m.begin(); it != m.end(); ++it) { auto& [k,v] = *it; }`——「走到下一個元素」這個動作編譯器自動處理，不需要（也不能）自己額外寫遞增。不只 `unordered_map`，`vector`、`map`、`set` 等所有支援 `begin()`/`end()` 的容器都能用這個語法。
@@ -87,4 +91,5 @@ key 型別限制：內建型別（int、string...）可以直接當 key。自訂
 | 題號 | 用法情境 |
 |------|---------|
 | 1 | Two Sum：用 `seen[value] = index` 邊遍歷邊記錄，查 `target - nums[i]` 有沒有出現過，取代 O(n²) 暴力雙迴圈 |
+| 383 | Ransom Note：兩邊字串各自建 `unordered_map<char,int>` 統計次數，單向比對「夠不夠用」（≥），不是雙向完全相等 |
 | 242 | Valid Anagram：兩個 `unordered_map` 分別記錄 s、t 的字元計數，比對是否完全一致；練習 iterator 走訪與 range-based for 兩種寫法 |
