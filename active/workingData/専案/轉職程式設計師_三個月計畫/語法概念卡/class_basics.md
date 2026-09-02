@@ -44,6 +44,13 @@ Implement Queue using Stacks 這題需要 `sIn`、`sOut` 這兩個 Stack 在 `pu
 
 </details>
 
+<details>
+<summary>Q4. 可以在一個成員函式裡面，直接定義另一個函式嗎？</summary>
+
+A4. 不行，**C++ 不支援巢狀函式定義**（不像某些語言可以在函式內部直接宣告另一個函式）。需要一個輔助函式（例如遞迴用的 DFS/helper）時，要把它獨立寫成 class 的另一個成員函式（通常放 `private:`），跟原本的函式平行並列，不能寫在裡面。如果這個輔助函式需要跟呼叫它的函式共用某個值（例如遞迴過程中要持續更新的全域最大值），那個值也要跟著變成成員變數，不能留在原本函式的區域變數。
+
+</details>
+
 ## 完整筆記
 
 LeetCode 的「設計資料結構」類題目（`class MyXxx { ... }` 這種格式，例如這題、LRU Cache 之類的），核心都是同一套模式：需要跨函式呼叫持續存在的資料放成員變數，內部邏輯需要拆分重複使用的部分放私有輔助函式。跟一般單一函式的題目（`class Solution { bool xxx(...) { ... } }`）比，多了「怎麼設計這個類別本身的內部結構」這一層。
@@ -53,3 +60,4 @@ LeetCode 的「設計資料結構」類題目（`class MyXxx { ... }` 這種格�
 | 題號 | 用法情境 |
 |------|---------|
 | 232 | Implement Queue using Stacks：`sIn`、`sOut` 兩個 `stack<int>` 當成員變數持續累積狀態，`shiftStack()` 私有函式封裝搬移邏輯，被 `pop()`/`peek()` 直接呼叫 |
+| 543 | Diameter of Binary Tree：一開始把 `DFS` 寫成巢狀函式編不過，改成獨立的 `private` 成員函式，全域最大直徑 `res` 也改成成員變數，讓 `DFS` 遞迴過程能持續更新它 |

@@ -76,6 +76,28 @@ A5. 走訪整條串列是 O(n)。跟陣列比，插入/刪除（已經拿到節�
 
 </details>
 
+<details>
+<summary>Q6. 原地反轉鏈結串列（迭代法）怎麼寫？順序為什麼是這樣？</summary>
+
+A6.
+```cpp
+ListNode* prev = nullptr;
+ListNode* curr = head;
+
+while (curr != nullptr) {
+    ListNode* reg = curr->next;   // 1. 先存住舊的 next，不然改完就找不到了
+    curr->next = prev;             // 2. 反轉指標，一定要用「還沒被覆蓋的舊 prev」
+    prev = curr;                   // 3. prev 往前移一格
+    curr = reg;                    // 4. curr 往前移一格（用剛剛存的 reg）
+}
+
+return prev;   // 迴圈結束時 curr 為 nullptr，prev 就是新的頭節點
+```
+關鍵不是死背這四行，而是順序背後的原因：**多個狀態變數要在同一輪更新時，任何一步都不能用「本輪已經被自己覆蓋過的新值」**。這裡是先讀出 `curr->next` 存進 `reg`，再拿舊的 `prev` 去覆蓋 `curr->next`，最後才依序把 `prev`、`curr` 往前移。順序對調（例如先 `prev = curr` 再 `curr->next = prev`）會讓節點的 `next` 指向自己，形成自環。
+不需要額外開一個新的鏈結串列來承接結果——原地反轉是直接改動既有節點的 `next`，比另外建新串列更省，遇到反轉/重排類題目可以先想「能不能直接動原本的指標」。
+
+</details>
+
 ## 完整筆記
 
 鏈結串列跟陣列的取捨，本質上跟 [`map`（紅黑樹）vs 排序陣列 + 二分法查詢](map.md) 是同一種「連續記憶體換隨機存取」vs「指標連結換插入彈性」的取捨，可以對照著理解。
@@ -85,3 +107,4 @@ A5. 走訪整條串列是 O(n)。跟陣列比，插入/刪除（已經拿到節�
 | 題號 | 用法情境 |
 |------|---------|
 | 21 | Merge Two Sorted Lists：用 dummy head + tail 指標，兩個指標各自走訪 L1、L2，較小的節點接到 tail 尾端，merge 完成後回傳 `dummy->next` |
+| 206 | Reverse Linked List：三指標（`prev`/`curr`/`reg`）迭代原地反轉，見 Q6 |

@@ -42,6 +42,36 @@ A4. 如果這一步的答案**只依賴前面固定幾步**（例如 Climbing St
 
 </details>
 
+<details>
+<summary>Q5. 「以目前位置結尾的最大和」這種 DP（Kadane's Algorithm）怎麼想？</summary>
+
+A5. 核心遞迴關係式：`cur = max(nums[i], cur + nums[i])`——走到每個位置，只有兩種選擇：**接續前面累積的和**，或**放棄前面、從這個位置重新開始**，取較大的那個。另外用一個變數持續記錄「目前為止看過的最大值」：`maxSum = max(maxSum, cur)`。
+
+```cpp
+int cur = 0;
+int maxSum = INT_MIN;
+
+for (int i = 0; i < nums.size(); i++){
+    cur = max(nums[i], cur + nums[i]);
+    maxSum = max(maxSum, cur);
+}
+return maxSum;
+```
+
+跟 Climbing Stairs 一樣，這一步的答案只依賴「前一步累積的結果」，不需要完整陣列，兩個滾動變數（`cur`、`maxSum`）就夠，O(n) 時間、O(1) 空間。
+
+另一種等價寫法（同一個遞迴關係式的不同記帳方式）：不用 `max(nums[i], cur+nums[i])`，改成「先無條件累加，如果累加後變負的就歸零」：
+```cpp
+currSum += val;
+maxSum = max(maxSum, currSum);
+if (currSum < 0) currSum = 0;
+```
+兩者數學上等價：`cur < 0` 時，`nums[i]` 一定比 `cur + nums[i]` 大，效果相同。
+
+**`INT_MIN` 當安全初始值的技巧**：`maxSum` 要記錄「目前為止看過的最大值」，如果簡單粗暴設成 `0`，遇到「全部都是負數」的輸入會出錯（`0` 代表『什麼都不選』，但題目通常不允許空結果，`0` 反而會被誤判成比任何合法負數答案都大）。用 `<climits>` 提供的 `INT_MIN`（該型別能表示的最小值）當初始值，保證比任何合法輸入都小，**第一輪比較一定會被換掉**，不需要額外判斷「這是不是第一筆資料」的特殊分支。之後遇到「要找最大值，但不確定第一筆資料本身合不合法／陣列可能全負」的情境，都可以用這招取代「用 `nums[0]` 初始化 + 特殊判斷第一輪」的寫法。
+
+</details>
+
 ## 完整筆記
 
 Climbing Stairs 這題的完整演進路徑，可以當成理解 DP 的範例：
@@ -56,3 +86,4 @@ Climbing Stairs 這題的完整演進路徑，可以當成理解 DP 的範例：
 | 題號 | 用法情境 |
 |------|---------|
 | 70 | Climbing Stairs：`ways(n)=ways(n-1)+ways(n-2)`，最終用兩個滾動變數取代陣列記憶化，達到 O(n) 時間、O(1) 空間 |
+| 53 | Maximum Subarray（Kadane's Algorithm）：`cur=max(nums[i],cur+nums[i])` 判斷接續還是重新開始，`maxSum` 用 `INT_MIN` 初始化避免全負數輸入時被 `0` 誤判 |

@@ -42,6 +42,7 @@ A4.
 2. **忘記某個該保持不變的值該用參數傳遞，卻在每一層重新計算**：如果某層遞迴已經修改了資料，下一層再用 `目前資料[i]` 重新算，會讀到已經被修改過的值（Flood Fill 的 `curColor` 踩過這個坑）
 3. **沒有 base case，或 base case 永遠不會被觸發**：導致無窮遞迴、stack overflow
 4. **同一個子問題的遞迴呼叫，在同一層被呼叫了不只一次**：例如需要用到 `f(root->left)` 的結果好幾個地方，每個地方都重新呼叫一次 `f(root->left)`，等於同一個子樹被重新遞迴計算好幾遍。正確做法是呼叫一次、存進區域變數，之後都從變數取值（Balanced Binary Tree 踩過這個坑，一度讓本來已經優化成 O(n) 的合併寫法，因為重複呼叫又變相退化）
+5. **樹的遞迴少了 `root==nullptr` 這個 base case，改用「檢查子節點是不是 null」代替**：例如用 `root->left==nullptr && root->right==nullptr` 判斷葉節點，卻沒有先檢查 `root` 本身是不是 `nullptr`。只要樹不是每個節點都恰好 0 或 2 個子節點（例如只有一邊有子節點），往下呼叫 `DFS(root->left)` 傳進去的就是 `nullptr`，函式內部一樣會對它取 `->left`，未定義行為（Maximum Depth of Binary Tree 踩過）。**只要 `root==nullptr` 的 base case 寫在最前面、獨立處理，呼叫端就可以無條件呼叫 `DFS(root->left)`、`DFS(root->right)`，不需要另外判斷子節點是不是 null 才決定要不要呼叫**，這樣也能省掉一堆重複的判斷分支
 
 </details>
 
@@ -70,3 +71,5 @@ A5.
 | 226 | Invert Binary Tree：每個節點交換左右指標，遞迴呼叫自己處理左右子樹，不需要手動追蹤父節點 |
 | 235 | Lowest Common Ancestor of a BST：善用 BST 順序性決定往左/往右遞迴，其餘情況自己就是答案；卡在「先找兩點再往回推」的手動思路，靠 Leap of Faith 突破 |
 | 110 | Balanced Binary Tree：`pair<int,bool>` 同時回傳高度與是否平衡，合併成一次遞迴；踩過同一子問題被重複呼叫多次的效率坑 |
+| 543 | Diameter of Binary Tree：DFS 回傳值固定是「深度」給父節點用；另外用成員變數 `res` 在每層遞迴內比較更新「左右深度加總」，兩者是分開的資訊，不能共用同一個回傳值——是 Q5 三種做法之外，第四種「用成員變數代替回傳值」的實例 |
+| 104 | Maximum Depth of Binary Tree：一開始沿用上一題 Diameter 的邊數技巧（`-1` 起始值），確認這題不需要組合左右兩邊、直接要節點數深度後改回 `nullptr` 回傳 `0`；也踩到 Q4 第 5 點的坑（漏了 `root==nullptr` base case，靠檢查子節點代替），修正後順便拿掉一堆重複判斷分支 |
