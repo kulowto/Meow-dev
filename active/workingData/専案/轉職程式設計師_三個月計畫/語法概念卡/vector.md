@@ -62,6 +62,24 @@ for (int x : v) { }        // range-based for
 
 </details>
 
+<details>
+<summary>Q5. `auto [x, y] = v;` 這種結構化綁定，能用在 `vector` 上嗎？</summary>
+
+A5. 不行。結構化綁定只能用在**編譯期就知道固定有幾個元素**的型別上，例如 `pair`、`tuple`、`array`，或成員數量固定的 struct。`vector` 是**執行期才決定大小**的動態容器，編譯器沒辦法保證「這個 vector 一定剛好有幾個元素」，所以不支援這個語法，寫了會編不過。
+
+```cpp
+pair<int,int> p = {1, 2};
+auto [x, y] = p;              // 合法，pair 大小固定為 2
+
+vector<int> v = {1, 2};
+auto [x, y] = v;               // 不合法，vector 大小是動態的，編不過
+
+int x = v[0];                   // 要拿 vector 裡的值，用一般索引
+int y = v[1];
+```
+
+</details>
+
 ## 完整筆記
 
 遇到多維 `vector`（尤其函式簽名裡同時出現 `vector<T>` 跟 `vector<vector<T>>` 兩種參數，例如區間類題目常見 `vector<vector<int>>& intervals` 搭配 `vector<int>& newInterval`）時，**先花一句話確認每個變數各自的維度，再開始寫索引**，不要憑「感覺上都是同一種東西」就套用同一套 `[i][j]` 寫法。這種混淆比單純的 off-by-one 更容易讓人卡很久，因為型別錯誤有時候要等到編譯或執行才會發現，不像邏輯錯誤可以用具體例子直接 trace 出來。
@@ -71,3 +89,4 @@ for (int x : v) { }        // range-based for
 | 題號 | 用法情境 |
 |------|---------|
 | 57 | Insert Interval：`intv` 是 `vector<vector<int>>`、`nIntv` 是 `vector<int>`，一開始把 `nIntv` 誤當二維操作（`nIntv[0][0]`），也誤把 `nIntv[0]`（單一 int）push 進期待 `vector<int>` 的結果陣列，撞牆許久後全部砍掉重寫才一次處理好 |
+| 973 | K Closest Points to Origin：`p[i]` 是 `vector<int>`，一開始想用 `auto [x,y]=p[i];` 結構化綁定取值，確認 vector 不支援後改用一般索引 `p[i][0]`/`p[i][1]` |

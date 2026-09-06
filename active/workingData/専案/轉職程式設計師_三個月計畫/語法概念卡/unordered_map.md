@@ -53,6 +53,35 @@ A4. 平均插入/查詢/刪除都是 O(1)；最壞情況（hash 碰撞嚴重）�
 
 </details>
 
+<details>
+<summary>Q5. 一邊走訪、一邊要 `erase` 某些 entry，正確寫法是什麼？</summary>
+
+A5. **不能**用一般的 `for` 迴圈自帶的 `iter++` 搭配迴圈內的 `erase`：
+
+```cpp
+// 錯誤：erase 之後 iter 已失效，接著 for 迴圈還會執行 iter++（對失效的 iterator 操作，未定義行為）
+for (auto iter = store.begin(); iter != store.end(); iter++) {
+    if (該刪除) store.erase(iter->first);
+}
+```
+
+`erase(iter)` 或 `erase(key)` 都會讓「指向被刪除那個 entry」的 iterator 失效。要讓迴圈自己控制何時前進：
+
+```cpp
+// 正確：erase 回傳「指向下一個元素」的 iterator，用它取代手動 ++；沒刪除時才自己 ++iter
+for (auto iter = store.begin(); iter != store.end(); ) {
+    if (該刪除) {
+        iter = store.erase(iter);
+    } else {
+        ++iter;
+    }
+}
+```
+
+**額外要注意**：如果迴圈開始前，另外拿了一個獨立的 iterator（例如 `auto reg = store.find(key);`）在迴圈判斷式裡使用，只要迴圈中途把 `reg` 指到的那個 entry 也刪掉了，`reg` 一樣會失效，之後再讀 `reg->second` 就是未定義行為——即使你已經用上面的正確寫法處理了 `iter`，`reg` 是另一個獨立變數，erase 不會幫你同步更新它。安全做法是**在迴圈開始前，先把 `reg` 指到的值取出來存成一個普通變數**（例如 `int regValue = reg->second;`），迴圈裡用這個普通變數比較，不要在迴圈進行中持續依賴一個可能被同一個迴圈弄失效的 iterator。
+
+</details>
+
 ## 完整筆記
 
 `unordered_map<KeyType, ValueType>`，`#include <unordered_map>`。
@@ -93,4 +122,5 @@ key 型別限制：內建型別（int、string...）可以直接當 key。自訂
 | 1 | Two Sum：用 `seen[value] = index` 邊遍歷邊記錄，查 `target - nums[i]` 有沒有出現過，取代 O(n²) 暴力雙迴圈 |
 | 383 | Ransom Note：兩邊字串各自建 `unordered_map<char,int>` 統計次數，單向比對「夠不夠用」（≥），不是雙向完全相等 |
 | 242 | Valid Anagram：兩個 `unordered_map` 分別記錄 s、t 的字元計數，比對是否完全一致；練習 iterator 走訪與 range-based for 兩種寫法 |
+| 3 | Longest Substring Without Repeating Characters：`unordered_map<char,int>` 記錄每個字元上次出現的位置，遇到重複時掃過整個 map 刪除過期 entry。踩到「erase 期間迭代」的 UB（見 Q5），以及誤把 iterator（`reg`）當數字用 `>=` 比較（呼應 Q3 第 8 點，iterator 不支援大小比較） |
 | 169 | Majority Element：`unordered_map<int,int>` 邊遍歷邊 `st[nums[i]]++`，數量一超過 `n/2` 立刻提早 return，不用等統計完再找最大值 |

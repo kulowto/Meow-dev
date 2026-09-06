@@ -35,3 +35,4 @@
 | 70 | Climbing Stairs：一開始想用 `std::array<int, n-1>` 做記憶化，但 `n` 是執行期變數，`array` 大小必須編譯期固定，該用 `vector`；最終用兩個滾動變數取代整個容器，把空間複雜度降到 O(1) |
 | 409 | Longest Palindrome：52（大小寫字母種類數）是寫死的編譯期常數，符合 `array` 而非 `vector` 的使用時機，串連了「key 種類固定少→用陣列」跟「大小是常數→用 array」兩個教訓 |
 | 169 | Majority Element：一開始又想到 `vector`／`Vector<char,int>`（pair 概念）裝「值＋次數」，繞了一圈才想到 `unordered_map`，第 3 次出現同一類猶豫 |
+| 3 | Longest Substring Without Repeating Characters：參考解法把 `unordered_map<char,int>` 換成 `array<int,128>`（字元直接當索引，涵蓋整個 ASCII），比 `c-'a'` 偏移量轉索引的範圍更廣，同一個「key 種類固定且小→用陣列」原則的延伸應用 |
