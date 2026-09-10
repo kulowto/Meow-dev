@@ -4,7 +4,7 @@
 - 對應 C#：語法上跟 C++ 一樣（函式呼叫自己），差異在於「什麼時候該想到用它」這個思考層面
 
 > 複習時先看 Q，自己講一遍答案，再點開 `<details>` 對答案。
-> 跟 [`red_black_tree.md`](red_black_tree.md)、[`linked_list.md`](linked_list.md) 是同一種「自我相似結構」家族，樹狀結構特別容易用到遞迴。
+> 跟 [`map.md`](map.md)（紅黑樹）、[`linked_list.md`](linked_list.md) 是同一種「自我相似結構」家族，樹狀結構特別容易用到遞迴。
 
 ## 自我測驗
 

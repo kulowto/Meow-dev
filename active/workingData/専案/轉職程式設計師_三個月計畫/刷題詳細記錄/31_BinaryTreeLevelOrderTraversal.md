@@ -89,6 +89,53 @@ public:
 - 第一次嘗試用迭代（非遞迴）方式做樹的走訪，用單一變數模擬回溯，結構性失敗——樹的遞迴回溯本質上需要記住「完整的路徑」，只有真正的遞迴（呼叫堆疊）或明確的 Stack 容器能做到，單一變數不夠。之後想避開遞迴、自己手動迭代時，先確認需不需要「回溯超過一層」，需要的話直接想到用 Stack 或維持遞迴，不要嘗試用單一變數硬做
 - DFS 也能完成「層序」這種聽起來像是 BFS 專屬的任務，只要额外帶一個深度參數——遇到「看起來一定要用某種資料結構/走法」的題目，可以想一下有沒有辦法用自己更熟悉的技巧（這裡是遞迴）改造出來，兩種思路都有其效能與直覺上的取捨
 
+### 其他解法：BFS 版本（同一題第二種寫法，一次寫對）
+
+DFS 解過之後，又用 BFS 寫了一次做對照。
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> rtn;
+        queue<TreeNode*> store;
+
+        if(root == nullptr){
+            return rtn;
+        }
+        store.push(root);
+
+        while(!store.empty()){
+            vector<int> cur;
+            int outputCount = store.size();   // 迴圈開始前鎖定「這一層有幾個節點」
+
+            for(int i = 0; i < outputCount; i++){
+                auto it = store.front();
+                store.pop();
+                cur.push_back(it->val);
+                if(it->left != nullptr)  store.push(it->left);
+                if(it->right != nullptr) store.push(it->right);
+            }
+
+            rtn.push_back(cur);
+        }
+
+        return rtn;
+    }
+};
+```
+
+**關鍵**：在內層迴圈開始「之前」先把 `store.size()` 存進 `outputCount` 鎖定——這個數字剛好是「這一層的節點數」，因為它們全是上一層處理時放進 queue 的。用這個鎖定的固定值跑內層迴圈，中途往 queue 塞進的下一層節點不會干擾這一輪的次數。
+
+**DFS vs BFS 實作難度對照**（兩者都是 O(n) 時間、O(n) 空間，不是效能差異）：
+
+| | DFS（遞迴 + 深度參數） | BFS（queue） |
+|---|---|---|
+| 概念契合度 | 要多想一步：帶深度參數、確信「先左後右 + 深度分類」順序正確 | queue 天生一層一層處理，「層」的邊界用 `queue.size()` 一眼看出 |
+| 實際踩到的坑 | `depth++` 副作用、`while` 補 `rtn` 大小、一開始想用單一 `prev` 變數做迭代失敗 | 無，一次寫對（`front`/`pop` 的位置也對，沒重蹈 01 Matrix 的覆轍） |
+
+這題印證了討論時的結論：BFS 不是效能更好，是「比較容易寫對、比較符合直覺」。
+
 ### 跟上次相比
 
 （第一次複習，留空）

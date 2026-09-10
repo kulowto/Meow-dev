@@ -1,6 +1,7 @@
 # 20 Valid Parentheses
 
 - Key Cogitation：Stack
+- 相關概念卡：[`語法概念卡/stack.md`](../語法概念卡/stack.md)、[`語法概念卡/order_vs_value.md`](../語法概念卡/order_vs_value.md)
 - Level：Easy
 
 > 同一題每次複習都在本檔案下方累加一段，不開新檔。用「跟上次相比」欄位追蹤盲點是否解決。

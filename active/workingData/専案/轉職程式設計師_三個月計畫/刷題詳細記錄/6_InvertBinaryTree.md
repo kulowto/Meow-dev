@@ -2,7 +2,7 @@
 
 - Key Cogitation：Binary Tree、Recursion (DFS)
 - Level：Easy
-- 相關概念卡：[`語法概念卡/red_black_tree.md`](../語法概念卡/red_black_tree.md)（節點+指標家族）
+- 相關概念卡：[`語法概念卡/recursion.md`](../語法概念卡/recursion.md)
 
 > 同一題每次複習都在本檔案下方累加一段，不開新檔。用「跟上次相比」欄位追蹤盲點是否解決。
 

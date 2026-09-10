@@ -56,7 +56,7 @@ Binary Search（242 Valid Anagram 之後的 704 Binary Search）就是活生生�
 
 ## 完整筆記
 
-延伸閱讀：「依值整理」這一家族的底層機制細節，見 [`unordered_map.md`](unordered_map.md)（hash table）、[`map.md`](map.md) / [`red_black_tree.md`](red_black_tree.md)（紅黑樹）、[`binary_search.md`](binary_search.md)（排序陣列 + 二分法）——這些全部都是「犧牲順序、換取依值查詢效率」的同一種取捨。「保留順序」這一家族則見 [`stack.md`](stack.md)（LIFO）跟 [`linked_list.md`](linked_list.md)（雙指標、dummy head 尾端合併）。
+延伸閱讀：「依值整理」這一家族的底層機制細節，見 [`unordered_map.md`](unordered_map.md)（hash table）、[`map.md`](map.md)（紅黑樹，原理在該卡「底層機制」章節）、[`binary_search.md`](binary_search.md)（排序陣列 + 二分法）——這些全部都是「犧牲順序、換取依值查詢效率」的同一種取捨。「保留順序」這一家族則見 [`stack.md`](stack.md)（LIFO）跟 [`linked_list.md`](linked_list.md)（雙指標、dummy head 尾端合併）。
 
 拿到新題目時的檢查順序：
 1. 先讀題目限制條件，有沒有「先...才能...」「依序」「子序列」「維持排序」這類字眼
@@ -65,6 +65,14 @@ Binary Search（242 Valid Anagram 之後的 704 Binary Search）就是活生生�
 
 ## 出現過的題目
 
+> 完整的「題目 → 用到哪些方法論/語法」對照見 [`刷題詳細記錄/導覽.md`](../刷題詳細記錄/導覽.md)。以下只列「這個框架被明確應用/驗證」的題目。
+
 | 題號 | 用法情境 |
 |------|---------|
-| 121 | Best Time to Buy and Sell Stock：原本想用 BST 找最大減最小，被這個框架抓出「BST 丟棄時間順序、但這題先買後賣的限制依賴順序」的致命衝突，改用單一掃描解決 |
+| 1 | Two Sum：順序不重要，只要「存不存在」→ Hash Map |
+| 20 | Valid Parentheses：順序重要（巢狀配對）→ Stack |
+| 121 | Best Time to Buy and Sell Stock：原本想用 BST 找最大減最小，被這個框架抓出「BST 丟棄時間順序、但先買後賣依賴順序」的致命衝突，改用單一掃描 |
+| 125 | Valid Palindrome：順序重要（回文對稱）→ 雙指標從兩端往中間 |
+| 242 | Valid Anagram：只比字元計數是否一致，跟順序無關 → Hash Map |
+| 141 | Linked List Cycle：搭配 [`floyd_cycle.md`](floyd_cycle.md) 快慢指標，原地走訪不重排 |
+| 15 | 3Sum：答案本身順序不重要，可以先排序 → 排序 + 雙指標 |

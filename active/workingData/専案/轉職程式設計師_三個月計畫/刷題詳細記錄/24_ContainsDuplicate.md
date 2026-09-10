@@ -2,7 +2,7 @@
 
 - Key Cogitation：Hash Set（邊走訪邊查重複）
 - Level：Easy
-- 相關概念卡：[`語法概念卡/unordered_set.md`](../語法概念卡/unordered_set.md)、[`語法概念卡/container_selection.md`](../語法概念卡/container_selection.md)
+- 相關概念卡：[`語法概念卡/unordered_map.md`](../語法概念卡/unordered_map.md)（unordered_set 章節）、[`語法概念卡/container_selection.md`](../語法概念卡/container_selection.md)
 
 > 同一題每次複習都在本檔案下方累加一段，不開新檔。用「跟上次相比」欄位追蹤盲點是否解決。
 
@@ -45,7 +45,7 @@ public:
 
 #### 容器選擇：第一次用到 unordered_set
 
-一開始猶豫 `pair` 還是 `vector`，主動要求複習可用的容器。這題只需要判斷「值存不存在」，不需要額外配對的資訊，屬於 `unordered_set` 的使用時機（跟需要配對次數/索引的 `unordered_map` 不同），第一次實際用到這個容器，補了獨立的 `unordered_set.md` 概念卡。
+一開始猶豫 `pair` 還是 `vector`，主動要求複習可用的容器。這題只需要判斷「值存不存在」，不需要額外配對的資訊，屬於 `unordered_set` 的使用時機（跟需要配對次數/索引的 `unordered_map` 不同），第一次實際用到這個容器（相關內容在 `unordered_map.md` 的 unordered_set 章節）。
 
 #### 額外討論：Big-O 好但實測比較慢
 
