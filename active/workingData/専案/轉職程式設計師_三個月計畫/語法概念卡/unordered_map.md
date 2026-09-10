@@ -124,3 +124,4 @@ key 型別限制：內建型別（int、string...）可以直接當 key。自訂
 | 242 | Valid Anagram：兩個 `unordered_map` 分別記錄 s、t 的字元計數，比對是否完全一致；練習 iterator 走訪與 range-based for 兩種寫法 |
 | 3 | Longest Substring Without Repeating Characters：`unordered_map<char,int>` 記錄每個字元上次出現的位置，遇到重複時掃過整個 map 刪除過期 entry。踩到「erase 期間迭代」的 UB（見 Q5），以及誤把 iterator（`reg`）當數字用 `>=` 比較（呼應 Q3 第 8 點，iterator 不支援大小比較） |
 | 169 | Majority Element：`unordered_map<int,int>` 邊遍歷邊 `st[nums[i]]++`，數量一超過 `n/2` 立刻提早 return，不用等統計完再找最大值 |
+| 133 | Clone Graph：`unordered_map<Node*, Node*>` 記錄「原節點→複製品」，同時身兼「已複製過了嗎」的 visited 標記與「複製品是誰」的查詢表；登記要在遞迴 neighbors 之前做，否則環繞回來查不到 |

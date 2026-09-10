@@ -80,6 +80,31 @@ int y = v[1];
 
 </details>
 
+<details>
+<summary>Q6. `vector<vector<int>>` 想用某個索引（例如樹的深度）直接存取，但不確定這個索引存不存在，該怎麼補足大小？</summary>
+
+A6. `vector` 不會自動長大到容納某個索引，`v[i]` 對超出目前 `size()` 的索引存取是未定義行為。要先確保 `size()` 夠大：
+
+```cpp
+while (v.size() <= idx) {
+    v.push_back({});   // 一次補一格，直到夠用為止
+}
+v[idx].push_back(x);
+```
+
+**只用 `if` 檢查一次是不夠的**：如果 `idx` 一次比目前 `size()` 大超過 `1`（例如 `size()=0` 但 `idx=1`），`if` 只會補一次（讓 `size()` 變成 `1`），還是不夠存取 `v[1]`。要用 `while`（或直接 `resize(idx+1)`）確保無論差距多少都能一次補足。
+
+</details>
+
+<details>
+<summary>Q7. 遞迴傳遞索引/深度這種參數時，`depth++` 跟 `depth+1` 差在哪？</summary>
+
+A7. `depth++` 是**後置遞增**，除了「回傳目前的值當參數」，還會**修改 `depth` 這個變數本身**（副作用）。如果同一個函式呼叫裡多次用到 `depth++`（例如分別傳給 `DFS(left, depth++)` 跟 `DFS(right, depth++)`），第二次呼叫拿到的值會是「已經被第一次呼叫悄悄加過 1」的值，兩次子呼叫拿到的深度會不一樣（都不是你要的「父節點深度+1」），而且函式結束後想用 `depth` 記錄自己這一層時，這個變數也已經被改過好幾次，不再代表原本的深度。
+
+只是想「算出一個新的值傳給子呼叫，但不改動自己手上的 `depth`」，直接用 `depth+1`（一般加法，沒有副作用）就好，不要用 `depth++`。
+
+</details>
+
 ## 完整筆記
 
 遇到多維 `vector`（尤其函式簽名裡同時出現 `vector<T>` 跟 `vector<vector<T>>` 兩種參數，例如區間類題目常見 `vector<vector<int>>& intervals` 搭配 `vector<int>& newInterval`）時，**先花一句話確認每個變數各自的維度，再開始寫索引**，不要憑「感覺上都是同一種東西」就套用同一套 `[i][j]` 寫法。這種混淆比單純的 off-by-one 更容易讓人卡很久，因為型別錯誤有時候要等到編譯或執行才會發現，不像邏輯錯誤可以用具體例子直接 trace 出來。
@@ -90,3 +115,4 @@ int y = v[1];
 |------|---------|
 | 57 | Insert Interval：`intv` 是 `vector<vector<int>>`、`nIntv` 是 `vector<int>`，一開始把 `nIntv` 誤當二維操作（`nIntv[0][0]`），也誤把 `nIntv[0]`（單一 int）push 進期待 `vector<int>` 的結果陣列，撞牆許久後全部砍掉重寫才一次處理好 |
 | 973 | K Closest Points to Origin：`p[i]` 是 `vector<int>`，一開始想用 `auto [x,y]=p[i];` 結構化綁定取值，確認 vector 不支援後改用一般索引 `p[i][0]`/`p[i][1]` |
+| 102 | Binary Tree Level Order Traversal：DFS 遞迴傳遞深度時誤用 `depth++`（副作用改動自己手上的深度），改成 `depth+1`；`rtn[depth]` 存取前用 `while(rtn.size()<=depth) push_back({})` 補足大小，只用 `if` 補一次不夠 |
