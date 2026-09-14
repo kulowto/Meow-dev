@@ -74,3 +74,4 @@ A5.
 | 543 | Diameter of Binary Tree：DFS 回傳值固定是「深度」給父節點用；另外用成員變數 `res` 在每層遞迴內比較更新「左右深度加總」，兩者是分開的資訊，不能共用同一個回傳值——是 Q5 三種做法之外，第四種「用成員變數代替回傳值」的實例 |
 | 104 | Maximum Depth of Binary Tree：一開始沿用上一題 Diameter 的邊數技巧（`-1` 起始值），確認這題不需要組合左右兩邊、直接要節點數深度後改回 `nullptr` 回傳 `0`；也踩到 Q4 第 5 點的坑（漏了 `root==nullptr` base case，靠檢查子節點代替），修正後順便拿掉一堆重複判斷分支 |
 | 102 | Binary Tree Level Order Traversal：DFS 也能做層序走訪——遞迴多帶一個「深度」參數（用 `depth+1` 傳給子呼叫，不能用 `depth++`，見 `vector.md` Q7），每個節點走訪到就把值存進 `rtn[depth]`；即使記錄動作放在遞迴呼叫子節點「之後」（後序），因為左子樹永遠比右子樹先完整跑完（含記錄自己），同一層的順序依然是正確的由左到右，不需要在遞迴呼叫之前記錄 |
+| 207 | Course Schedule：一個節點有多個子節點（`vector<int>` 先修課列表）要分別遞迴，容易誤設計成單一線性鏈；`for` 迴圈裡「這個分支沒問題」不能提早 `return false`，要等全部分支跑完才能下結論，完整技巧見 [`graph_cycle_detection.md`](graph_cycle_detection.md) |
